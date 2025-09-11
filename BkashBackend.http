@@ -1,0 +1,6 @@
+@BkashBackend_HostAddress = http://localhost:5126
+
+GET {{BkashBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
