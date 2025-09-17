@@ -18,7 +18,13 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
+// Add HttpClient for DI
 builder.Services.AddHttpClient();
+
+// --- REGISTER YOUR CUSTOM SERVICE ---
+// Use mock for now
+builder.Services.AddScoped(_ => new BkashService(new HttpClient(), useMock: true));
+
 
 var app = builder.Build();
 
