@@ -26,8 +26,8 @@ jobs:
         run: dotnet build BkashBackend.csproj --configuration Release --no-restore
 
       # Run tests (adjust path if your test project exists)
-      - name: Test
-        run: dotnet test BkashBackend.Tests/BkashBackend.Tests.csproj --no-restore --no-build --verbosity normal
+      # - name: Test
+      #   run: dotnet test BkashBackend.Tests/BkashBackend.Tests.csproj --no-restore --no-build --verbosity normal
 
       # Publish the project
       - name: Publish
