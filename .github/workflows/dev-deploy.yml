@@ -17,17 +17,21 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      # Restore dependencies for the specific project
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore backend/BkashBackend.csproj
 
+      # Build the specific project
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build backend/BkashBackend.csproj --configuration Release --no-restore
 
+      # Run tests (if you have a test project)
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test backend/BkashBackend.Tests/BkashBackend.Tests.csproj --no-restore --no-build --verbosity normal
 
+      # Publish the specific project
       - name: Publish
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish backend/BkashBackend.csproj -c Release -o ./publish
 
       - name: Deploy to Dev Server
         run: echo "Deploying backend to Dev environment..."
