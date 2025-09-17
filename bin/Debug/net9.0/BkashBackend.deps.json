@@ -34,14 +34,7 @@
           }
         }
       },
-      "System.Net.Http.Json/9.0.9": {
-        "runtime": {
-          "lib/net9.0/System.Net.Http.Json.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.925.41916"
-          }
-        }
-      }
+      "System.Net.Http.Json/9.0.9": {}
     }
   },
   "libraries": {
