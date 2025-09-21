@@ -31,6 +31,7 @@ app.UseStaticFiles();    // Serve Angular files from wwwroot
 app.UseRouting();
 app.MapControllers();
 
+
 // Fallback to Angular index.html for client-side routing
 app.MapFallbackToFile("index.html");
 
