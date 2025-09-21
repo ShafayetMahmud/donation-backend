@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app
+name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app (Dev)
 
 on:
   push:
@@ -51,5 +51,5 @@ jobs:
         with:
           app-name: 'mudhammataan-app'
           slot-name: 'Production'
-          package: ./dotnet-app
+          package: ./dotnet-app/*
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
