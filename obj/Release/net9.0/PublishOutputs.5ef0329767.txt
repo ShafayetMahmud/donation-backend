@@ -1,0 +1,12 @@
+E:\donation-backend\publish\BkashBackend.exe
+E:\donation-backend\publish\appsettings.Development.json
+E:\donation-backend\publish\appsettings.json
+E:\donation-backend\publish\BkashBackend.dll
+E:\donation-backend\publish\BkashBackend.deps.json
+E:\donation-backend\publish\BkashBackend.runtimeconfig.json
+E:\donation-backend\publish\BkashBackend.pdb
+E:\donation-backend\publish\Microsoft.AspNetCore.OpenApi.dll
+E:\donation-backend\publish\Microsoft.OpenApi.dll
+E:\donation-backend\publish\Swashbuckle.AspNetCore.Swagger.dll
+E:\donation-backend\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+E:\donation-backend\publish\Swashbuckle.AspNetCore.SwaggerUI.dll

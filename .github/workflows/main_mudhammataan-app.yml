@@ -1,0 +1,54 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore dependencies
+        run: dotnet restore BkashBackend.csproj
+
+      - name: Build project
+        run: dotnet build BkashBackend.csproj --configuration Release --no-restore
+
+      - name: Publish project
+        run: dotnet publish BkashBackend.csproj -c Release -o ./publish --no-build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-app
+          path: ./publish
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-app
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'mudhammataan-app'
+          slot-name: 'Production'
+          package: ./dotnet-app/*
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_70E3E623081F48B4A1E6E8CB40CD404E }}
