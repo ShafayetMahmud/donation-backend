@@ -50,5 +50,5 @@ jobs:
         with:
           app-name: 'mudhammataan-app'
           slot-name: 'Production'
-          package: ./dotnet-app/*
+          package: ./publish
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_70E3E623081F48B4A1E6E8CB40CD404E }}
