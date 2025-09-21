@@ -1,4 +1,4 @@
-name: Stage Backend Deployment
+name: Stage Backend Build
 
 on:
   push:
@@ -6,11 +6,12 @@ on:
       - stage
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
@@ -20,16 +21,14 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore BkashBackend.csproj
 
-      - name: Build
+      - name: Build project
         run: dotnet build BkashBackend.csproj --configuration Release --no-restore
 
-      - name: Publish
+      - name: Publish project
         run: dotnet publish BkashBackend.csproj -c Release -o ./publish --no-build
 
-      - name: Deploy to Azure Web App (Stage)
-        uses: azure/webapps-deploy@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          app-name: 'mudhammataan-app'
-          slot-name: 'Staging'
-          package: ./publish/*
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          name: dotnet-app
+          path: ./publish
