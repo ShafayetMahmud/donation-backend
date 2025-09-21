@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app (Dev)
+name: Build ASP.Net Core app - mudhammataan-app (Dev)
 
 on:
   push:
@@ -36,20 +36,5 @@ jobs:
           name: dotnet-app
           path: ./publish
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dotnet-app
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'mudhammataan-app'
-          slot-name: 'Production'
-          package: ./dotnet-app/*
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+# Deploy step removed for Dev branch
+# Deploy will happen only from Stage branch
