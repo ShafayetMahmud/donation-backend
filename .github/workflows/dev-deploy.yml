@@ -1,37 +1,55 @@
-name: Dev Backend Deployment
+name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app
 
 on:
   push:
     branches:
-      - dev
+      - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '9.x'
 
-      # Restore dependencies for the project at the repo root
       - name: Restore dependencies
         run: dotnet restore BkashBackend.csproj
 
-      # Build the project
-      - name: Build
+      - name: Build project
         run: dotnet build BkashBackend.csproj --configuration Release --no-restore
 
-      # Run tests (adjust path if your test project exists)
-      # - name: Test
-      #   run: dotnet test BkashBackend.Tests/BkashBackend.Tests.csproj --no-restore --no-build --verbosity normal
+      - name: Publish project
+        run: dotnet publish BkashBackend.csproj -c Release -o ./publish --no-build
 
-      # Publish the project
-      - name: Publish
-        run: dotnet publish BkashBackend.csproj -c Release -o ./publish
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-app
+          path: ./publish
 
-      - name: Deploy to Dev Server
-        run: echo "Deploying backend to Dev environment..."
+  deploy:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-app
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'mudhammataan-app'
+          slot-name: 'Production'
+          package: ./dotnet-app
+          publish-profile: ${{ secrets.__publishingprofilesecretname__ }}
