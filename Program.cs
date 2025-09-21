@@ -1,43 +1,37 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// Add controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi(); // Minimal API OpenAPI support
-
-// Enable CORS for Angular frontend
-builder.Services.AddCors(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.AddPolicy("AllowAngular",
-        policy => policy.WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1"
+    });
 });
-
-// Add HttpClient for DI
-builder.Services.AddHttpClient();
-
-// --- REGISTER YOUR CUSTOM SERVICE ---
-// Use mock for now
-builder.Services.AddScoped(_ => new BkashService(new HttpClient(), useMock: true));
-
 
 var app = builder.Build();
 
-// OpenAPI (JSON spec) in Development
-
+// Enable Swagger (conditionally if needed)
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-app.UseCors("AllowAngular");
+app.UseStaticFiles();    // Serve Angular files from wwwroot
+app.UseRouting();
 app.MapControllers();
+
+// Fallback to Angular index.html for client-side routing
+app.MapFallbackToFile("index.html");
 
 app.Run();
