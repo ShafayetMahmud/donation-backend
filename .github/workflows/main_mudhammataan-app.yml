@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app (Dev)
+name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app
 
 on:
   push:
@@ -13,10 +13,9 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET 9
+      - name: Set up .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
@@ -52,4 +51,4 @@ jobs:
           app-name: 'mudhammataan-app'
           slot-name: 'Production'
           package: ./dotnet-app/*
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_70E3E623081F48B4A1E6E8CB40CD404E }}

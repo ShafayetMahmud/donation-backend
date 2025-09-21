@@ -12,22 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
-      # Restore dependencies for the project at repo root
       - name: Restore dependencies
         run: dotnet restore BkashBackend.csproj
 
-      # Build the project
       - name: Build
         run: dotnet build BkashBackend.csproj --configuration Release --no-restore
 
-      # Publish the project
       - name: Publish
-        run: dotnet publish BkashBackend.csproj -c Release -o ./publish
+        run: dotnet publish BkashBackend.csproj -c Release -o ./publish --no-build
 
-      - name: Deploy to Stage Server
-        run: echo "Deploying backend to Stage environment..."
+      - name: Deploy to Azure Web App (Stage)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'mudhammataan-app'
+          slot-name: 'Staging'
+          package: ./publish/*
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
