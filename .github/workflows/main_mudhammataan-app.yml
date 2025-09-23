@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - mudhammataan-app
+name: Build & Deploy (self-contained) - mudhammataan-app
 
 on:
   push:
@@ -7,48 +7,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
-    permissions:
-      contents: read
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up .NET 9
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
 
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore BkashBackend.csproj
 
-      - name: Build project
-        run: dotnet build BkashBackend.csproj --configuration Release --no-restore
+      - name: Build
+        run: dotnet build BkashBackend.csproj -c Release --no-restore
 
-      - name: Publish project
-        run: dotnet publish BkashBackend.csproj -c Release -o ./publish --no-build
+      - name: Publish (self-contained win-x86)
+        run: dotnet publish BkashBackend.csproj -c Release -r win-x86 --self-contained true /p:PublishSingleFile=false -o ./publish
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dotnet-app
-          path: ./publish
+      - name: Create correct web.config (run exe directly)
+        shell: pwsh
+        run: |
+          $wc = Join-Path $PWD 'publish\web.config'
+          $content = @'<?xml version="1.0" encoding="utf-8"?><configuration><system.webServer><handlers><add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" /></handlers><aspNetCore processPath="BkashBackend.exe" stdoutLogEnabled="false" stdoutLogFile="\\?\%home%\LogFiles\stdout" hostingModel="inprocess" /></system.webServer></configuration>'@$content | Set-Content -Path $wc -Encoding UTF8
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
+      - name: Zip published files
+        run: Compress-Archive -Path publish\* -DestinationPath app.zip -Force
 
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dotnet-app
-
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure Web App (zip)
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'mudhammataan-app'
-          slot-name: 'Production'
-          package: ./publish
+          package: 'app.zip'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_70E3E623081F48B4A1E6E8CB40CD404E }}
