@@ -27,11 +27,12 @@ jobs:
       - name: Publish (self-contained win-x86)
         run: dotnet publish BkashBackend.csproj -c Release -r win-x86 --self-contained true /p:PublishSingleFile=false -o ./publish
 
-      - name: Create correct web.config (run exe directly)
+      - name: Create correct web.config (single line)
         shell: pwsh
         run: |
           $wc = Join-Path $PWD 'publish\web.config'
-          $content = @'<?xml version="1.0" encoding="utf-8"?><configuration><system.webServer><handlers><add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" /></handlers><aspNetCore processPath="BkashBackend.exe" stdoutLogEnabled="false" stdoutLogFile="\\?\%home%\LogFiles\stdout" hostingModel="inprocess" /></system.webServer></configuration>'@$content | Set-Content -Path $wc -Encoding UTF8
+          $xml = '<?xml version="1.0" encoding="utf-8"?><configuration><location path="." inheritInChildApplications="false"><system.webServer"><handlers"><add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" /></handlers><aspNetCore processPath=".\BkashBackend.exe" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="inprocess" /></system.webServer></location></configuration>'
+          Set-Content -Path $wc -Value $xml -Encoding UTF8
 
       - name: Zip published files
         run: Compress-Archive -Path publish\* -DestinationPath app.zip -Force
