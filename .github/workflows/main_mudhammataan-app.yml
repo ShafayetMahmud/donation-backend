@@ -27,7 +27,6 @@ jobs:
       - name: Publish (self-contained win-x86)
         run: dotnet publish BkashBackend.csproj -c Release -r win-x86 --self-contained true /p:PublishSingleFile=false -o ./publish
 
-
       - name: Create correct web.config (run exe directly)
         shell: pwsh
         run: |
