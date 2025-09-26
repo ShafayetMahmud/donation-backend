@@ -18,6 +18,9 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Set AZURE_STORAGE_KEY environment variable
+        run: echo "AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }}" >> $GITHUB_ENV
+
       - name: Restore
         run: dotnet restore BkashBackend.csproj
 
@@ -43,3 +46,4 @@ jobs:
           app-name: 'mudhammataan-app'
           package: 'app.zip'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_70E3E623081F48B4A1E6E8CB40CD404E }}
+

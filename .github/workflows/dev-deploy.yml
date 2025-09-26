@@ -36,5 +36,8 @@ jobs:
           name: dotnet-app
           path: ./publish
 
+      - name: Set AZURE_STORAGE_KEY env
+        run: echo "AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }}" >> $GITHUB_ENV
+
 # Deploy step removed for Dev branch
 # Deploy will happen only from Stage branch

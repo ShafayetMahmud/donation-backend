@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 public class GalleryController : ControllerBase
 {
     private readonly string accountName = "mudhammataanstorage";
-    private readonly string accountKey = "3/lrk+YIK2+NJdC/tpsgV4FYx+bdPQEnjXBNNfmK5gfUxda8BUstcEEbqODjdSudPnVs86Lec42g+AStuK3MTQ==";
+    private readonly string accountKey = Environment.GetEnvironmentVariable("AZURE_STORAGE_KEY");
     private readonly string containerName = "gallery";
+
 
     [HttpGet("get-sas")]
     public IActionResult GetSas(string blobName)
