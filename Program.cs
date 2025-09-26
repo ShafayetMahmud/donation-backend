@@ -17,6 +17,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// "https://your-frontend-domain.com", "https://mudhammataan.com"
+
 var app = builder.Build();
 
 // Enable Swagger (conditionally only if needed)
@@ -30,6 +43,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();    // Serve Angular files from wwwroot
 app.UseRouting();
+app.UseCors("AllowFrontend");
 app.MapControllers();
 
 
