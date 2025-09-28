@@ -18,6 +18,9 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Set AZURE_STORAGE_KEY environment variable
+        run: echo "AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }}" >> $GITHUB_ENV
+
       - name: Restore dependencies
         run: dotnet restore BkashBackend.csproj
 
