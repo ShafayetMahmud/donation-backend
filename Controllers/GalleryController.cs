@@ -8,8 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 public class GalleryController : ControllerBase
 {
     private readonly string accountName = "mudhammataanstorage";
-    private readonly string accountKey = Environment.GetEnvironmentVariable("AZURE_STORAGE_KEY");
+    private readonly string accountKey;
     private readonly string containerName = "gallery";
+
+    public GalleryController(IConfiguration config)
+    {
+        accountKey = config["AZURE_STORAGE_KEY"] 
+                     ?? throw new InvalidOperationException("AZURE_STORAGE_KEY is not set in environment variables.");
+    }
 
 
     [HttpGet("get-sas")]
