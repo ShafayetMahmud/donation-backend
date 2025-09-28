@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("303eee20-72a5-4f6d-8afb-476bc3eeb71f")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8070e76761bfa47fddd8a37453c130d6f05cf61a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e807958b8fecb14c4d8924d16d3767ee99a0ef6d")]
 [assembly: System.Reflection.AssemblyProductAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
