@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "https://mudhammataan.com", "http://mudhammataan.com", "almahadassaboor.mudhammataan.com", "mudhammataan-app-bcdwa5debqc4h7dj.northeurope-01.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
