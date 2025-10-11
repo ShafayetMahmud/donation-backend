@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4c1b232ea56500af5a3c6563423a64293bdde03")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3183af88ee6ebd50591a7fb427fa54657c266f01")]
 [assembly: System.Reflection.AssemblyProductAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BkashBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
