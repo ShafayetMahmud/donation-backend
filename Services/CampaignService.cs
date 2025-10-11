@@ -80,12 +80,36 @@ public class CampaignService
         if (string.IsNullOrWhiteSpace(subdomain))
             return null;
 
-        foreach (var file in Directory.GetFiles(_dataFolder, "*.json"))
+        try
         {
-            var json = File.ReadAllText(file);
-            var campaign = JsonSerializer.Deserialize<Campaign>(json);
-            if (campaign?.Subdomain?.Equals(subdomain, StringComparison.OrdinalIgnoreCase) == true)
-                return campaign;
+            // Ensure directory exists
+            if (!Directory.Exists(_dataFolder))
+                return null;
+
+            foreach (var file in Directory.GetFiles(_dataFolder, "*.json"))
+            {
+                try
+                {
+                    var json = File.ReadAllText(file);
+                    var campaign = JsonSerializer.Deserialize<Campaign>(json);
+                    
+                    // Check both exact match and normalized subdomain
+                    if (campaign?.Subdomain?.Equals(subdomain, StringComparison.OrdinalIgnoreCase) == true ||
+                        campaign?.Name?.ToLower().Replace(" ", "-") == subdomain.ToLower())
+                    {
+                        return campaign;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error reading campaign file {file}: {ex.Message}");
+                    continue;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetCampaignBySubdomain: {ex.Message}");
         }
 
         return null;

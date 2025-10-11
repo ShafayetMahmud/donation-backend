@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/campaign")]  // Explicitly set the route to lowercase
 public class CampaignController : ControllerBase
 {
     private readonly CampaignService _service;
+    private readonly ILogger<CampaignController> _logger;
 
-    public CampaignController(CampaignService service)
+    public CampaignController(CampaignService service, ILogger<CampaignController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     [HttpPost("create")]
@@ -44,9 +46,24 @@ public class CampaignController : ControllerBase
     [HttpGet("by-subdomain/{subdomain}")]
     public IActionResult GetBySubdomain(string subdomain)
     {
-        var campaign = _service.GetCampaignBySubdomain(subdomain);
-        if (campaign == null)
-            return NotFound();
-        return Ok(campaign);
+        _logger.LogInformation($"Searching for campaign with subdomain: {subdomain}");
+        
+        try
+        {
+            var campaign = _service.GetCampaignBySubdomain(subdomain);
+            if (campaign == null)
+            {
+                _logger.LogWarning($"Campaign not found for subdomain: {subdomain}");
+                return NotFound(new { message = $"No campaign found for subdomain: {subdomain}" });
+            }
+            
+            _logger.LogInformation($"Found campaign: {campaign.Name} for subdomain: {subdomain}");
+            return Ok(campaign);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error getting campaign for subdomain: {subdomain}");
+            return StatusCode(500, new { message = "Error retrieving campaign" });
+        }
     }
 }
