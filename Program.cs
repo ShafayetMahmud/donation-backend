@@ -23,18 +23,21 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.SetIsOriginAllowed(origin => 
+        policy.SetIsOriginAllowed(origin =>
         {
             if (string.IsNullOrEmpty(origin)) return false;
-            
-            try {
+
+            try
+            {
                 var uri = new Uri(origin);
                 var domain = uri.Host.ToLower();
-                return domain.EndsWith("mudhammataan.com") || 
-                       domain == "localhost" ||
-                       domain.EndsWith("azurewebsites.net");
+                return domain.EndsWith("mudhammataan.com") ||
+       domain == "localhost" ||
+       domain.EndsWith("azurewebsites.net") ||
+       domain == "mudhammataan-app-bcdwa5debqc4h7dj.northeurope-01.azurewebsites.net";
             }
-            catch {
+            catch
+            {
                 return false;
             }
         })
