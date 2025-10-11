@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers and Swagger
+builder.Services.AddSingleton<CampaignService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -22,10 +23,30 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "https://mudhammataan.com", "http://mudhammataan.com", "https://almahadassaboor.mudhammataan.com", "mudhammataan-app-bcdwa5debqc4h7dj.northeurope-01.azurewebsites.net")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.SetIsOriginAllowed(origin => 
+        {
+            if (string.IsNullOrEmpty(origin)) return false;
+            
+            try {
+                var uri = new Uri(origin);
+                var domain = uri.Host.ToLower();
+                return domain.EndsWith("mudhammataan.com") || 
+                       domain == "localhost" ||
+                       domain.EndsWith("azurewebsites.net");
+            }
+            catch {
+                return false;
+            }
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
+});
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
 });
 
 // "https://your-frontend-domain.com", "https://mudhammataan.com"
@@ -40,11 +61,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Only force HTTPS in production and if not already using HTTPS
+if (app.Environment.IsProduction() && !app.Environment.IsEnvironment("AllowHttp"))
+{
+    app.UseHttpsRedirection();
+}
 app.UseStaticFiles();    // Serve Angular files from wwwroot
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.MapControllers();
+// app.UseMiddleware<CampaignMiddleware>();
 
 
 // Fallback to Angular index.html for client-side routing
