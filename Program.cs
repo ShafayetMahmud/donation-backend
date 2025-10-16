@@ -23,21 +23,6 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        if (builder.Environment.IsDevelopment())
-        {
-            // Development: allow everything
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        }
-        else
-        {
-            // Production: allow same-origin requests (since frontend and API are on same domain)
-            policy.SetIsOriginAllowed(origin => true)  // Allow any origin since we're handling subdomains
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        }
         policy.SetIsOriginAllowed(origin =>
         {
             if (string.IsNullOrEmpty(origin)) return false;
@@ -46,10 +31,12 @@ builder.Services.AddCors(options =>
             {
                 var uri = new Uri(origin);
                 var domain = uri.Host.ToLower();
-                return domain.EndsWith("mudhammataan.com") ||
-       domain == "localhost" ||
-       domain.EndsWith("azurewebsites.net") ||
-       domain == "mudhammataan-app-bcdwa5debqc4h7dj.northeurope-01.azurewebsites.net";
+
+                // ✅ Allow your main domain + subdomains + local dev
+                return domain == "localhost"
+                    || domain.EndsWith("mudhammataan.com")
+                    || domain.EndsWith("azurewebsites.net")
+                    || domain == "mudhammataan-app-bcdwa5debqc4h7dj.northeurope-01.azurewebsites.net";
             }
             catch
             {
@@ -58,9 +45,10 @@ builder.Services.AddCors(options =>
         })
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials();
+        .AllowCredentials(); // ✅ You can keep credentials since no wildcard
     });
 });
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
