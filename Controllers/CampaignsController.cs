@@ -17,7 +17,7 @@ public class CampaignController : ControllerBase
     [HttpPost("create")]
     public IActionResult Create([FromBody] Campaign campaign)
     {
-        Console.WriteLine($"Received campaign payload: {campaign?.Name}, {campaign?.Why}, {campaign?.WhatFor}, {campaign?.How}, {campaign?.Contact}");
+        Console.WriteLine($"Received campaign payload: {campaign?.Name}, {campaign?.Why}, {campaign?.WhatFor}, {campaign?.How}, {campaign?.Contact}, {campaign?.Goals}, {campaign?.Method}, {campaign?.Quote}, {campaign?.Missionquote}, {campaign?.Descriptionone}, {campaign?.Descriptiontwo}, {campaign?.Descriptionthree}, {campaign?.Descriptionfour}");
 
         if (campaign == null || string.IsNullOrWhiteSpace(campaign.Name))
             return BadRequest("Campaign Name required");

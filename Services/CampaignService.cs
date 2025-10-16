@@ -47,29 +47,37 @@ public class CampaignService
     // }
 
     public Campaign UpdateCampaign(Campaign updatedCampaign)
-{
-    var filePath = Path.Combine(_dataFolder, updatedCampaign.Id + ".json");
+    {
+        var filePath = Path.Combine(_dataFolder, updatedCampaign.Id + ".json");
 
-    if (!File.Exists(filePath))
-        return null;
+        if (!File.Exists(filePath))
+            return null;
 
-    // Load existing campaign to preserve Subdomain
-    var existingJson = File.ReadAllText(filePath);
-    var existingCampaign = JsonSerializer.Deserialize<Campaign>(existingJson);
+        // Load existing campaign to preserve Subdomain
+        var existingJson = File.ReadAllText(filePath);
+        var existingCampaign = JsonSerializer.Deserialize<Campaign>(existingJson);
 
-    // Merge fields (overwrite only what is provided)
-    existingCampaign.Name = updatedCampaign.Name;
-    existingCampaign.Why = updatedCampaign.Why;
-    existingCampaign.WhatFor = updatedCampaign.WhatFor;
-    existingCampaign.How = updatedCampaign.How;
-    existingCampaign.Contact = updatedCampaign.Contact;
-    existingCampaign.Gallery = updatedCampaign.Gallery ?? existingCampaign.Gallery;
+        // Merge fields (overwrite only what is provided)
+        existingCampaign.Name = updatedCampaign.Name;
+        existingCampaign.Why = updatedCampaign.Why;
+        existingCampaign.Goals = updatedCampaign.Goals;
+        existingCampaign.Method = updatedCampaign.Method;
+        existingCampaign.Quote = updatedCampaign.Quote;
+        existingCampaign.Missionquote = updatedCampaign.Missionquote;
+        existingCampaign.Descriptionone = updatedCampaign.Descriptionone;
+        existingCampaign.Descriptiontwo = updatedCampaign.Descriptiontwo;
+        existingCampaign.Descriptionthree = updatedCampaign.Descriptionthree;
+        existingCampaign.Descriptionfour = updatedCampaign.Descriptionfour;
+        existingCampaign.WhatFor = updatedCampaign.WhatFor;
+        existingCampaign.How = updatedCampaign.How;
+        existingCampaign.Contact = updatedCampaign.Contact;
+        existingCampaign.Gallery = updatedCampaign.Gallery ?? existingCampaign.Gallery;
 
-    // Write back to file
-    File.WriteAllText(filePath, JsonSerializer.Serialize(existingCampaign, new JsonSerializerOptions { WriteIndented = true }));
+        // Write back to file
+        File.WriteAllText(filePath, JsonSerializer.Serialize(existingCampaign, new JsonSerializerOptions { WriteIndented = true }));
 
-    return existingCampaign;
-}
+        return existingCampaign;
+    }
 
 
     /// <summary>
