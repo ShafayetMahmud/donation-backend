@@ -23,6 +23,21 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
+        if (builder.Environment.IsDevelopment())
+        {
+            // Development: allow everything
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+        else
+        {
+            // Production: allow same-origin requests (since frontend and API are on same domain)
+            policy.SetIsOriginAllowed(origin => true)  // Allow any origin since we're handling subdomains
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        }
         policy.SetIsOriginAllowed(origin =>
         {
             if (string.IsNullOrEmpty(origin)) return false;
@@ -65,13 +80,35 @@ if (app.Environment.IsDevelopment())
 }
 
 // Only force HTTPS in production and if not already using HTTPS
-if (app.Environment.IsProduction() && !app.Environment.IsEnvironment("AllowHttp"))
-{
-    app.UseHttpsRedirection();
-}
+// Disable HTTPS redirection for now
+// app.UseHttpsRedirection();
 app.UseStaticFiles();    // Serve Angular files from wwwroot
 app.UseRouting();
 app.UseCors("AllowFrontend");
+
+// Add subdomain middleware
+app.Use(async (context, next) =>
+{
+    var host = context.Request.Host.Host;
+    var path = context.Request.Path.Value;
+
+    // Only process API requests
+    if (!path.StartsWith("/api"))
+    {
+        await next();
+        return;
+    }
+
+    // Extract subdomain (everything before the first dot)
+    var subdomain = host.Split('.')[0];
+    if (!string.IsNullOrEmpty(subdomain) && subdomain != "www" && !subdomain.Equals("mudhammataan", StringComparison.OrdinalIgnoreCase))
+    {
+        // Store subdomain in HttpContext items for later use
+        context.Items["subdomain"] = subdomain;
+    }
+
+    await next();
+});
 app.MapControllers();
 // app.UseMiddleware<CampaignMiddleware>();
 
